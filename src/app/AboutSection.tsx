@@ -109,7 +109,7 @@ export default function AboutSection() {
               aspect-[436/614] keeps the portrait ratio without a fixed height,
               so the text column always gets proportional space.
             */}
-            <div className="relative w-[30.3vw] max-w-[436px] aspect-[436/614] overflow-hidden shrink-0">
+            <div className="relative w-[35vw] aspect-[436/614] overflow-hidden shrink-0">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src={photoDesktop}
