@@ -97,7 +97,7 @@ export default function NewsSection() {
       {/* gap-[60px] creates breathing room between rotated title and first card.
           The articles container overflows horizontally at narrower viewports —
           that's intentional; the third card bleeds off and users can scroll. */}
-      <div className="hidden md:flex items-end gap-[60px]">
+      <div className="hidden md:flex items-end gap-[160px]">
 
         {/* Rotated vertical title
             The 706 px tall / 110 px wide box contains the title text
