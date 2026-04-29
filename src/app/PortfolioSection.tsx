@@ -4,40 +4,32 @@
   Desktop: "Selected Work" + "004" headline, [ portfolio ] rotated label on right,
            then a staggered two-column grid — left column starts flush, right column
            is offset 240 px down, creating the cascading layout.
-           Left col:  Surfers Paradise → Cyberpunk Caffe → CTA framed block
-           Right col: Agency 976 → Minimal Playground
+           Left col:  items[0] → items[1] → CTA framed block
+           Right col: items[2] → items[3]
 
   Mobile:  [ portfolio ] label → "Selected Work / 004" → 4 cards stacked → CTA block
 */
 
-// ── Project images ────────────────────────────────────────────────────────────
-// Each project uses a single hero image (the topmost layer from the Figma stack).
-const projects = [
-  {
-    title: 'Surfers Paradise',
-    tags: ['Social Media', 'Photography'],
-    img: 'https://www.figma.com/api/mcp/asset/153ecdeb-0d73-4c07-8d4b-dc26d13fd6c1',
-    tallCard: true,   // 744 px on desktop
-  },
-  {
-    title: 'Cyberpunk Caffe',
-    tags: ['Social Media', 'Photography'],
-    img: 'https://www.figma.com/api/mcp/asset/72c03e4b-97d0-40fd-9ee4-0dd0036e9ebc',
-    tallCard: false,  // 699 px on desktop
-  },
-  {
-    title: 'Agency 976',
-    tags: ['Social Media', 'Photography'],
-    img: 'https://www.figma.com/api/mcp/asset/4aeb0fca-903e-4de7-b914-d721f3d33a82',
-    tallCard: false,
-  },
-  {
-    title: 'Minimal Playground',
-    tags: ['Social Media', 'Photography'],
-    img: 'https://www.figma.com/api/mcp/asset/10490789-5523-4d35-9fa4-196061f51696',
-    tallCard: true,
-  },
-] as const;
+import { sanityFetch } from '@/sanity/lib/live'
+import { urlFor } from '@/sanity/lib/image'
+
+// ── Types ─────────────────────────────────────────────────────────────────────
+
+type PortfolioItem = {
+  _id: string
+  title: string
+  tags: string[]
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  image?: any
+  imageUrl?: string
+  tallCard: boolean
+  order: number
+  projectUrl?: string
+}
+
+const PORTFOLIO_QUERY = `*[_type == "portfolioItem"] | order(order asc) {
+  _id, title, tags, image, imageUrl, tallCard, order, projectUrl
+}`
 
 // ── Shared sub-components ─────────────────────────────────────────────────────
 
@@ -57,9 +49,8 @@ function Corner({ pos }: { pos: CornerPos }) {
   );
 }
 
-// Arrow-link button (↗ inside circle)
-function ArrowLink() {
-  return (
+function ArrowLink({ href }: { href?: string }) {
+  const inner = (
     <div
       aria-hidden="true"
       className="size-8 shrink-0 rounded-full border border-[#1f1f1f] flex items-center justify-center"
@@ -75,9 +66,10 @@ function ArrowLink() {
       </svg>
     </div>
   );
+  if (href) return <a href={href} target="_blank" rel="noopener noreferrer">{inner}</a>;
+  return inner;
 }
 
-// Frosted-glass category tag pill
 function Tag({ label }: { label: string }) {
   return (
     <span className="backdrop-blur-[10px] bg-white/30 text-[#111] text-[14px] font-medium tracking-[-0.04em] px-2 py-1 rounded-full whitespace-nowrap">
@@ -86,53 +78,53 @@ function Tag({ label }: { label: string }) {
   );
 }
 
-// Individual project card — shared by both layouts, height controlled by className
 function ProjectCard({
   project,
   className = '',
 }: {
-  project: (typeof projects)[number];
+  project: PortfolioItem;
   className?: string;
 }) {
+  const imgSrc = project.image
+    ? urlFor(project.image).width(900).url()
+    : project.imageUrl;
+
   return (
     <div className="flex flex-col gap-[10px]">
-      {/* Image with frosted tags pinned to bottom-left */}
       <div className={`relative overflow-hidden ${className}`}>
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
-          src={project.img}
-          alt={project.title}
-          className="absolute inset-0 w-full h-full object-cover"
-        />
+        {imgSrc && (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img
+            src={imgSrc}
+            alt={project.title}
+            className="absolute inset-0 w-full h-full object-cover"
+          />
+        )}
         <div className="absolute bottom-4 left-4 flex gap-3">
-          {project.tags.map((t) => (
+          {project.tags?.map((t) => (
             <Tag key={t} label={t} />
           ))}
         </div>
       </div>
 
-      {/* Title + arrow */}
       <div className="flex items-center justify-between">
         <p className="font-black text-[24px] md:text-[36px] text-black uppercase leading-[1.1] tracking-[-0.04em]">
           {project.title}
         </p>
-        <ArrowLink />
+        <ArrowLink href={project.projectUrl} />
       </div>
     </div>
   );
 }
 
-// CTA framed block (corner brackets + italic quote + "Let's talk" button)
 function FramedCTA() {
   return (
     <div className="flex gap-3 items-stretch">
-      {/* Left corners */}
       <div className="flex flex-col justify-between shrink-0 w-6">
         <Corner pos="tl" />
         <Corner pos="bl" />
       </div>
 
-      {/* Body */}
       <div className="flex-1 flex flex-col gap-[10px] justify-center py-3 min-w-0">
         <p className="italic text-[14px] text-[#1f1f1f] leading-[1.3] tracking-[-0.04em]">
           Discover how my creativity transforms ideas into impactful digital
@@ -143,7 +135,6 @@ function FramedCTA() {
         </button>
       </div>
 
-      {/* Right corners */}
       <div className="flex flex-col justify-between shrink-0 w-6">
         <Corner pos="tr" />
         <Corner pos="br" />
@@ -153,7 +144,12 @@ function FramedCTA() {
 }
 
 // ── Section ───────────────────────────────────────────────────────────────────
-export default function PortfolioSection() {
+
+export default async function PortfolioSection() {
+  const { data: projects } = await sanityFetch({ query: PORTFOLIO_QUERY })
+
+  const items = (projects ?? []) as PortfolioItem[]
+
   return (
     <section id="projects" className="px-4 md:px-8 py-12 md:py-[80px] bg-white">
 
@@ -175,7 +171,6 @@ export default function PortfolioSection() {
 
       {/* Desktop header */}
       <div className="hidden md:flex items-center justify-between mb-[61px]">
-        {/* "Selected Work" + "004" superscript */}
         <div className="flex gap-[10px] items-start uppercase whitespace-nowrap">
           <div className="font-light text-[6.67vw] text-black tracking-[-0.08em] leading-[0.86]">
             <p>Selected</p>
@@ -184,7 +179,6 @@ export default function PortfolioSection() {
           <p className="font-mono text-[14px] text-[#1f1f1f] leading-[1.1] pt-1">004</p>
         </div>
 
-        {/* "[ portfolio ]" rotated 90° to read vertically */}
         <div className="h-[110px] w-[15px] flex items-center justify-center">
           <p className="font-mono text-[14px] text-[#1f1f1f] uppercase whitespace-nowrap -rotate-90 origin-center">
             [ portfolio ]
@@ -194,32 +188,47 @@ export default function PortfolioSection() {
 
       {/* ── Desktop staggered two-column grid ─────────────────────────────── */}
       <div className="hidden md:flex gap-6 items-start">
-
-        {/* Left column: Surfers Paradise → Cyberpunk Caffe → CTA
-            gap-[117px] between every item matches the right column's inter-card
-            gap, which fixes both the Surfers→Cyberpunk and Cyberpunk→CTA spacing. */}
+        {/* Left column: items[0] → items[1] → CTA */}
         <div className="flex-1 flex flex-col gap-[117px]">
-          <ProjectCard project={projects[0]} className="h-[744px]" />
-          <ProjectCard project={projects[1]} className="h-[699px]" />
-          {/* CTA framed block — max 465 px wide per spec */}
+          {items[0] && (
+            <ProjectCard
+              project={items[0]}
+              className={items[0].tallCard ? 'h-[744px]' : 'h-[699px]'}
+            />
+          )}
+          {items[1] && (
+            <ProjectCard
+              project={items[1]}
+              className={items[1].tallCard ? 'h-[744px]' : 'h-[699px]'}
+            />
+          )}
           <div className="w-full max-w-[465px]">
             <FramedCTA />
           </div>
         </div>
 
-        {/* Right column: 240 px top offset → Agency 976 → 117 px gap → Minimal Playground */}
+        {/* Right column: 240 px offset → items[2] → items[3] */}
         <div className="flex-1 flex flex-col gap-[117px] pt-[240px]">
-          <ProjectCard project={projects[2]} className="h-[699px]" />
-          <ProjectCard project={projects[3]} className="h-[744px]" />
+          {items[2] && (
+            <ProjectCard
+              project={items[2]}
+              className={items[2].tallCard ? 'h-[744px]' : 'h-[699px]'}
+            />
+          )}
+          {items[3] && (
+            <ProjectCard
+              project={items[3]}
+              className={items[3].tallCard ? 'h-[744px]' : 'h-[699px]'}
+            />
+          )}
         </div>
       </div>
 
       {/* ── Mobile single-column grid ──────────────────────────────────────── */}
       <div className="flex flex-col gap-6 md:hidden">
-        {projects.map((p) => (
-          <ProjectCard key={p.title} project={p} className="h-[390px]" />
+        {items.map((p) => (
+          <ProjectCard key={p._id} project={p} className="h-[390px]" />
         ))}
-        {/* CTA block at the bottom */}
         <FramedCTA />
       </div>
 
