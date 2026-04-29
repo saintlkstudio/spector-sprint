@@ -56,7 +56,7 @@ export const portfolioItemType = defineType({
       name: 'order',
       title: 'Display Order',
       type: 'number',
-      description: 'Lower numbers appear first. Position 1 and 4 go in the left column; 2 and 3 in the right (offset) column.',
+      description: 'Lower numbers appear first. Positions 1 and 2 go in the left column; 3 and 4 go in the right (offset) column.',
       validation: (Rule) => Rule.required().integer().min(1),
     }),
     defineField({
