@@ -43,7 +43,7 @@ export default function Home() {
           src={heroImageMobile}
           alt=""
           aria-hidden="true"
-          className="md:hidden absolute inset-0 w-full h-full object-cover object-[center_15%] pointer-events-none select-none"
+          className="md:hidden absolute inset-x-0 -top-[80px] w-full h-[calc(100%+80px)] object-cover object-[40%_top] pointer-events-none select-none"
           style={heroMask}
         />
 
@@ -57,15 +57,6 @@ export default function Home() {
           style={heroMask}
         />
 
-        {/* Frosted-glass layer — mask makes the blur fade in from the top
-            so there's no hard horizontal edge where blurring suddenly starts. */}
-        <div
-          className="absolute bottom-0 left-0 right-0 h-[349px] backdrop-blur-[10px] bg-[rgba(217,217,217,0.01)] pointer-events-none"
-          style={{
-            WebkitMaskImage: 'linear-gradient(to bottom, transparent 0%, rgba(0,0,0,0.4) 30%, black 65%)',
-            maskImage:        'linear-gradient(to bottom, transparent 0%, rgba(0,0,0,0.4) 30%, black 65%)',
-          }}
-        />
 
         {/* ── Navbar ─────────────────────────────────────────── */}
         <Navbar />
@@ -109,13 +100,13 @@ export default function Home() {
             the negative tracking doesn't force unexpected wrapping.
           */}
           <div className="md:hidden w-full flex flex-col items-center pb-[15px]">
-            <p className="font-mono text-white text-[14px] uppercase mix-blend-overlay leading-[1.1] -mb-[15px]">
+            <p className="font-mono text-white text-[14px] uppercase mix-blend-overlay leading-[1.1] mb-[10px]">
               [ Hello i&apos;m ]
             </p>
             <h1
               className="font-medium text-white capitalize mix-blend-overlay text-center w-full text-[96px] leading-[0.8] tracking-[-0.07em]"
             >
-              Harvey<br />Specter
+              Harvey<span className="block mt-[10px]">Specter</span>
             </h1>
           </div>
 
@@ -123,9 +114,9 @@ export default function Home() {
               justify-center on mobile centres the 294 px block under the title.
               justify-end on desktop right-aligns it per the Figma spec.
           ─────────────────────────────────────────────────────── */}
-          <div className="flex justify-center md:justify-end">
+          <div className="flex justify-center md:justify-end mt-[10px] md:mt-0">
             <div className="flex flex-col gap-[17px] w-[294px]">
-              <p className="font-bold italic text-[#1f1f1f] text-[14px] tracking-[-0.04em] uppercase leading-[1.1]">
+              <p className="font-bold italic text-[#1f1f1f] text-[14px] tracking-[-0.04em] uppercase leading-[16.4px]">
                 H.Studio is a{' '}
                 <span className="font-normal not-italic">full-service</span>
                 {' '}creative studio creating beautiful digital experiences and
