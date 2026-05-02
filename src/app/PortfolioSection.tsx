@@ -1,3 +1,5 @@
+import MagneticButton from './MagneticButton';
+
 /*
   SELECTED WORK / PORTFOLIO SECTION
   ──────────────────────────────────
@@ -130,9 +132,7 @@ function FramedCTA() {
           Discover how my creativity transforms ideas into impactful digital
           experiences — schedule a call with me to get started.
         </p>
-        <button className="self-start bg-black text-white text-[14px] font-medium tracking-[-0.04em] px-4 py-3 rounded-full hover:bg-neutral-800 transition-colors">
-          Let&apos;s talk
-        </button>
+        <MagneticButton variant="dark">Let&apos;s talk</MagneticButton>
       </div>
 
       <div className="flex flex-col justify-between shrink-0 w-6">

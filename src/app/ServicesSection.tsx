@@ -47,6 +47,7 @@ export default function ServicesSection() {
   return (
     <section
       id="services"
+      data-navbar="dark"
       className="bg-black px-4 md:px-8 py-12 md:py-[80px] flex flex-col gap-8 md:gap-12"
     >
       {/* ── Section label ───────────────────────────────────── */}

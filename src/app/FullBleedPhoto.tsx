@@ -18,7 +18,7 @@ const photoMobile =
 
 export default function FullBleedPhoto() {
   return (
-    <section className="relative w-full overflow-hidden">
+    <section className="relative w-full overflow-hidden" data-navbar="dark">
 
       {/* Mobile: portrait crop, 3:4 ratio */}
       {/* eslint-disable-next-line @next/next/no-img-element */}
