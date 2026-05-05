@@ -13,6 +13,7 @@
 */
 
 import React, { useRef, useState, useEffect } from 'react';
+import gsap from 'gsap';
 
 // Logo images for each reviewer (company logos from the Figma)
 const logos = {
@@ -32,6 +33,7 @@ const testimonials = [
     rotation: 2.9,
     pos: { right: '28.54%' } as React.CSSProperties,
     top: '160px',
+    parallaxFactor: -90, // moves up → feels closer
   },
   {
     key: 'marko',
@@ -42,6 +44,7 @@ const testimonials = [
     rotation: -6.85,
     pos: { left: '7.08%' } as React.CSSProperties,
     top: '102px',
+    parallaxFactor: 80, // moves down → feels farther back
   },
   {
     key: 'sarah',
@@ -52,6 +55,7 @@ const testimonials = [
     rotation: 2.23,
     pos: { left: '21.18%' } as React.CSSProperties,
     top: '553px',
+    parallaxFactor: 60, // moves down → feels farther back
   },
   {
     key: 'sofia',
@@ -62,6 +66,7 @@ const testimonials = [
     rotation: -4.15,
     pos: { right: '6.94%' } as React.CSSProperties,
     top: '546px',
+    parallaxFactor: -70, // moves up → feels closer
   },
 ];
 
@@ -172,22 +177,73 @@ function MobileSlider() {
 
 // ── Section ───────────────────────────────────────────────────────────────────
 export default function TestimonialsSection() {
+  const desktopRef = useRef<HTMLDivElement>(null);
+  const cardRefs   = useRef<(HTMLDivElement | null)[]>([]);
+
+  useEffect(() => {
+    const section = desktopRef.current;
+    if (!section) return;
+
+    const cards = cardRefs.current.filter((c): c is HTMLDivElement => c !== null);
+
+    // Hand rotations to GSAP so it tracks them alongside the parallax y.
+    // If rotation stays in the React inline style, gsap.set(card, { y }) wipes it.
+    cards.forEach((card, i) => {
+      gsap.set(card, { rotation: testimonials[i].rotation });
+    });
+
+    // Per-card lerped values
+    const cur = testimonials.map(() => 0);
+    const tgt = testimonials.map(() => 0);
+
+    const onScroll = () => {
+      const rect = section.getBoundingClientRect();
+      const vh   = window.innerHeight;
+      // 0 = section entering from bottom, 0.5 = midpoint at viewport centre, 1 = leaving top
+      const progress = Math.max(0, Math.min(1, (vh - rect.top) / (vh + rect.height)));
+
+      testimonials.forEach((t, i) => {
+        tgt[i] = (progress - 0.5) * t.parallaxFactor;
+      });
+    };
+
+    const tick = () => {
+      cards.forEach((card, i) => {
+        cur[i] += (tgt[i] - cur[i]) * 0.07;
+        gsap.set(card, { y: cur[i] });
+      });
+    };
+
+    // Seed current values so there is no first-frame jump
+    onScroll();
+    testimonials.forEach((_, i) => { cur[i] = tgt[i]; });
+
+    window.addEventListener('scroll', onScroll, { passive: true });
+    gsap.ticker.add(tick);
+
+    return () => {
+      window.removeEventListener('scroll', onScroll);
+      gsap.ticker.remove(tick);
+      cards.forEach(c => gsap.set(c, { clearProps: 'y' }));
+    };
+  }, []);
+
   return (
     <section className="bg-white" id="testimonials">
 
       {/* ════ DESKTOP ════════════════════════════════════════════════════════ */}
-      <div className="hidden md:block relative px-8 py-[120px] min-h-[987px] overflow-hidden">
+      <div ref={desktopRef} className="hidden md:block relative px-8 py-[120px] min-h-[987px] overflow-hidden">
         <p className="font-medium text-black text-[13.75vw] text-center tracking-[-0.07em] leading-[1.1] capitalize w-full select-none mt-[260px]">
           Testimonials
         </p>
-        {testimonials.map((t) => (
+        {testimonials.map((t, i) => (
           <div
             key={t.key}
+            ref={(el) => { cardRefs.current[i] = el; }}
             className="absolute w-[31vw] max-w-[353px]"
             style={{
               ...t.pos,
               top: t.top,
-              transform: `rotate(${t.rotation}deg)`,
               zIndex: 'right' in t.pos ? 1 : 0,
             }}
           >

@@ -65,6 +65,26 @@ export const portfolioItemType = defineType({
       type: 'url',
       description: 'Optional link to the live project (the ↗ arrow button).',
     }),
+    defineField({
+      name: 'description',
+      title: 'Description',
+      type: 'text',
+      rows: 5,
+      description: 'Shown on the detail page under "About the work".',
+    }),
+    defineField({
+      name: 'specs',
+      title: 'Camera Specs',
+      type: 'object',
+      description: 'Technical details displayed on the detail page.',
+      fields: [
+        defineField({ name: 'camera',        title: 'Camera',        type: 'string' }),
+        defineField({ name: 'lens',          title: 'Lens',          type: 'string' }),
+        defineField({ name: 'shutterSpeed',  title: 'Shutter Speed', type: 'string' }),
+        defineField({ name: 'iso',           title: 'ISO',           type: 'string' }),
+        defineField({ name: 'client',        title: 'Client',        type: 'string' }),
+      ],
+    }),
   ],
   orderings: [
     {

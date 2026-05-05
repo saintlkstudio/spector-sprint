@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useRef, useEffect, useCallback } from 'react';
+import Link from 'next/link';
 import gsap from 'gsap';
 import MagneticButton from './MagneticButton';
 
@@ -31,9 +32,11 @@ function CloseIcon() {
 function DesktopLink({
   link,
   linkRef,
+  href,
 }: {
   link: string;
   linkRef: React.RefObject<HTMLAnchorElement | null>;
+  href?: string;
 }) {
   const tlRef = useRef<gsap.core.Timeline | null>(null);
 
@@ -49,7 +52,7 @@ function DesktopLink({
   return (
     <a
       ref={linkRef}
-      href={`#${link.toLowerCase()}`}
+      href={href ?? `#${link.toLowerCase()}`}
       onMouseEnter={() => tlRef.current?.restart()}
       className="relative group inline-block font-semibold text-[16px] tracking-[-0.04em] capitalize"
       style={{ display: 'inline-block' }}
@@ -193,14 +196,21 @@ export default function Navbar() {
       {/* ── Fixed top bar ─────────────────────────────────────── */}
       <nav className="fixed top-0 left-0 right-0 z-40 flex items-center justify-between py-6 px-4 md:px-8">
 
-        <span ref={logoRef} className="font-semibold text-[16px] tracking-[-0.04em] capitalize" style={{ color: '#000' }}>
-          H.Studio
-        </span>
+        <Link href="/">
+          <span ref={logoRef} className="font-semibold text-[16px] tracking-[-0.04em] capitalize" style={{ color: '#000' }}>
+            H.Studio
+          </span>
+        </Link>
 
         {/* Desktop links */}
         <div className="hidden md:flex items-center gap-14" style={{ color: '#000' }}>
           {navLinks.map((link, i) => (
-            <DesktopLink key={link} link={link} linkRef={desktopLinkRefs.current[i]} />
+            <DesktopLink
+              key={link}
+              link={link}
+              linkRef={desktopLinkRefs.current[i]}
+              href={link === 'About' ? '/about' : undefined}
+            />
           ))}
         </div>
 
@@ -245,9 +255,11 @@ export default function Navbar() {
         className="fixed inset-0 z-50 flex flex-col bg-black px-6 pt-6 pb-12 md:hidden overflow-hidden"
       >
         <div ref={headerRef} className="flex items-center justify-between mb-16 shrink-0">
-          <span className="font-semibold text-[16px] tracking-[-0.04em] capitalize text-white">
-            H.Studio
-          </span>
+          <Link href="/">
+            <span className="font-semibold text-[16px] tracking-[-0.04em] capitalize text-white">
+              H.Studio
+            </span>
+          </Link>
           <button aria-label="Close menu" onClick={closeMenu}>
             <CloseIcon />
           </button>
@@ -258,10 +270,10 @@ export default function Navbar() {
             <div key={link} className="overflow-hidden">
               <a
                 ref={(el) => { linkInnerRefs.current[i] = el; }}
-                href={`#${link.toLowerCase()}`}
+                href={link === 'About' ? '/about' : `#${link.toLowerCase()}`}
                 onClick={closeMenu}
                 style={{ display: 'block' }}
-                className="font-light text-[10.66vw] tracking-[-0.04em] capitalize text-white leading-none"
+                className="font-light text-[8vw] tracking-[-0.04em] capitalize text-white leading-none"
               >
                 {link}
               </a>

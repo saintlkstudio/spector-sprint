@@ -1,4 +1,8 @@
+import Link from 'next/link';
 import MagneticButton from './MagneticButton';
+import MagneticArrow from './MagneticArrow';
+import ParallaxImage from './ParallaxImage';
+import ScrambleTitle from './ScrambleTitle';
 
 /*
   SELECTED WORK / PORTFOLIO SECTION
@@ -20,6 +24,7 @@ import { urlFor } from '@/sanity/lib/image'
 type PortfolioItem = {
   _id: string
   title: string
+  slug?: { current: string }
   tags: string[]
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   image?: any
@@ -30,7 +35,7 @@ type PortfolioItem = {
 }
 
 const PORTFOLIO_QUERY = `*[_type == "portfolioItem"] | order(order asc) {
-  _id, title, tags, image, imageUrl, tallCard, order, projectUrl
+  _id, title, slug, tags, image, imageUrl, tallCard, order, projectUrl
 }`
 
 // ── Shared sub-components ─────────────────────────────────────────────────────
@@ -51,26 +56,6 @@ function Corner({ pos }: { pos: CornerPos }) {
   );
 }
 
-function ArrowLink({ href }: { href?: string }) {
-  const inner = (
-    <div
-      aria-hidden="true"
-      className="size-8 shrink-0 rounded-full border border-[#1f1f1f] flex items-center justify-center"
-    >
-      <svg width="13" height="13" viewBox="0 0 13 13" fill="none">
-        <path
-          d="M2 11L11 2M11 2H4.5M11 2V8.5"
-          stroke="#1f1f1f"
-          strokeWidth="1.5"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        />
-      </svg>
-    </div>
-  );
-  if (href) return <a href={href} target="_blank" rel="noopener noreferrer">{inner}</a>;
-  return inner;
-}
 
 function Tag({ label }: { label: string }) {
   return (
@@ -91,17 +76,12 @@ function ProjectCard({
     ? urlFor(project.image).width(900).url()
     : project.imageUrl;
 
+  const href = project.projectUrl ?? (project.slug?.current ? `/work/${project.slug.current}` : undefined);
+
   return (
     <div className="flex flex-col gap-[10px]">
       <div className={`relative overflow-hidden ${className}`}>
-        {imgSrc && (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img
-            src={imgSrc}
-            alt={project.title}
-            className="absolute inset-0 w-full h-full object-cover"
-          />
-        )}
+        {imgSrc && <ParallaxImage src={imgSrc} alt={project.title} />}
         <div className="absolute bottom-4 left-4 flex gap-3">
           {project.tags?.map((t) => (
             <Tag key={t} label={t} />
@@ -110,10 +90,20 @@ function ProjectCard({
       </div>
 
       <div className="flex items-center justify-between">
-        <p className="font-black text-[24px] md:text-[36px] text-black uppercase leading-[1.1] tracking-[-0.04em]">
-          {project.title}
-        </p>
-        <ArrowLink href={project.projectUrl} />
+        {href ? (
+          <Link href={href} className="min-w-0">
+            <ScrambleTitle
+              text={project.title}
+              className="font-black text-[24px] md:text-[36px] text-black uppercase leading-[1.1] tracking-[-0.04em] cursor-pointer select-none"
+            />
+          </Link>
+        ) : (
+          <ScrambleTitle
+            text={project.title}
+            className="font-black text-[24px] md:text-[36px] text-black uppercase leading-[1.1] tracking-[-0.04em] cursor-default select-none"
+          />
+        )}
+        <MagneticArrow href={href} />
       </div>
     </div>
   );
