@@ -11,15 +11,22 @@ import FooterSection from './FooterSection';
 export default function Home() {
   return (
     <main>
-      <HeroSection />
-      <BioSection />
-      <AboutSection />
-      <FullBleedPhoto />
-      <ServicesSection />
-      <PortfolioSection />
-      <TestimonialsSection />
-      <NewsSection />
-      <FooterSection />
+      {/* Content sits above the footer in stacking order */}
+      <div className="relative z-10">
+        <HeroSection />
+        <BioSection />
+        <AboutSection />
+        <FullBleedPhoto />
+        <ServicesSection />
+        <PortfolioSection />
+        <TestimonialsSection />
+        <NewsSection />
+      </div>
+
+      {/* Footer is pinned to the bottom on desktop — content scrolls over it */}
+      <div className="sticky bottom-0">
+        <FooterSection />
+      </div>
     </main>
   );
 }

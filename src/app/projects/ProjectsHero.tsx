@@ -1,21 +1,19 @@
 'use client';
 
 /*
-  ABOUT HERO — split-screen
-  ─────────────────────────
-  Deliberately different from the home-page hero: no full-bleed parallax
-  split. Instead, a 50/50 editorial split — portrait fills the left panel,
-  white copy panel on the right.
+  PROJECTS HERO — split-screen
+  ─────────────────────────────
+  Identical layout and animations to AboutHero / ServicesHero:
+  Desktop : flex-row — image left (w-1/2), white copy panel right (flex-1).
+  Mobile  : flex-col — image top, white panel below.
+
+  Image source: the large full-bleed photo used under the bio section
+  on the home page (desktop crop + mobile portrait crop).
 
   Animations:
-  1. Clip-path reveal — width expands left → right (inset right: 100% → 0 %)
-     driven by ScrollTrigger (fires once; triggers immediately on page load
-     since the hero is already in the viewport).
-  2. Vertical parallax — portrait drifts down up to 80 px as the section
-     scrolls out, creating depth.
-
-  Desktop : flex-row, portrait left (w-1/2), white panel right (flex-1).
-  Mobile  : flex-col, portrait top, white panel below.
+  1. Clip-path reveal — image expands left → right on load.
+  2. Text block slides in from the right on page load (desktop only).
+  3. Vertical parallax — image drifts down as section scrolls out.
 */
 
 import { useRef, useEffect } from 'react';
@@ -24,13 +22,13 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import Navbar from '../Navbar';
 import MagneticButton from '../MagneticButton';
 
-const portrait = 'https://www.figma.com/api/mcp/asset/f63d6845-e5f7-41ae-a7bb-3dfe66ee59ee';
+const image = 'https://www.figma.com/api/mcp/asset/6b83c32c-d7b1-4f3f-97a3-cec5151bb6ff';
 
-export default function AboutHero() {
+export default function ProjectsHero() {
   const sectionRef   = useRef<HTMLElement>(null);
-  const innerRef     = useRef<HTMLDivElement>(null);   // clip-path target
-  const imgRef       = useRef<HTMLImageElement>(null); // parallax target
-  const textBlockRef = useRef<HTMLDivElement>(null);   // right-panel text + button
+  const innerRef     = useRef<HTMLDivElement>(null);
+  const imgRef       = useRef<HTMLImageElement>(null);
+  const textBlockRef = useRef<HTMLDivElement>(null);
 
   // ── 1. Clip-path reveal: left → right ──────────────────────
   useEffect(() => {
@@ -47,11 +45,7 @@ export default function AboutHero() {
         duration: 1.2,
         delay: 0,
         ease: 'power4.inOut',
-        scrollTrigger: {
-          trigger: inner,
-          start: 'top 95%',
-          once: true,
-        },
+        scrollTrigger: { trigger: inner, start: 'top 95%', once: true },
       },
     );
 
@@ -71,7 +65,7 @@ export default function AboutHero() {
     return () => mm.revert();
   }, []);
 
-  // ── 3. Scroll-out: portrait parallax ──────────────────────────────
+  // ── 3. Scroll-out: image parallax ──────────────────────────
   useEffect(() => {
     const section = sectionRef.current;
     const img     = imgRef.current;
@@ -109,13 +103,7 @@ export default function AboutHero() {
     >
       <Navbar />
 
-      {/* ── Left panel: portrait ───────────────────────────────── */}
-      {/*
-        Three-layer structure:
-        1. Outer  — owns the 50 % column; overflow-hidden clips the ml offset.
-        2. Middle — applies the top gap and left margin (aligns with logo).
-        3. Inner  — clip-path reveal target + overflow-hidden for parallax.
-      */}
+      {/* ── Left panel: image ─────────────────────────────────── */}
       <div className="relative w-full md:w-1/2 shrink-0 md:overflow-hidden">
         <div className="mt-[80px] md:mt-[96px] md:ml-8">
           <div
@@ -125,30 +113,30 @@ export default function AboutHero() {
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               ref={imgRef}
-              src={portrait}
-              alt="Harvey Specter"
-              className="absolute w-full object-cover object-top"
+              src={image}
+              alt="H.Studio selected work"
+              className="absolute w-full object-cover object-center"
               style={{ height: '110%', top: '-5%' }}
             />
           </div>
         </div>
       </div>
 
-      {/* ── Right panel: text ──────────────────────────────────── */}
+      {/* ── Right panel: text ─────────────────────────────────── */}
       <div className="relative flex-1 bg-white flex flex-col px-4 py-8 md:pl-[76px] md:pr-12 md:py-0 md:pt-[96px] md:justify-center">
         <div ref={textBlockRef} className="flex flex-col gap-4 md:gap-6">
           <p className="font-mono text-[14px] text-[#1f1f1f] uppercase leading-[1.1]">
-            [ About ]
+            [ Projects ]
           </p>
 
           <h1 className="font-medium text-black capitalize text-[15vw] md:text-[8vw] leading-[0.86] tracking-[-0.07em]">
-            Harvey<br />Specter
+            Selected<br />Work
           </h1>
 
           <p className="font-bold italic text-[#1f1f1f] text-[14px] tracking-[-0.04em] uppercase leading-[1.3] max-w-[294px]">
-            A creative director and photographer with{' '}
-            <span className="font-normal not-italic">8+ years</span>
-            {' '}shaping visual identities for brands across{' '}
+            Eight years of{' '}
+            <span className="font-normal not-italic">strategy-led</span>
+            {' '}creative work across{' '}
             <span className="font-normal not-italic">20+ countries</span>.
           </p>
 

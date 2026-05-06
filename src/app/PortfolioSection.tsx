@@ -122,7 +122,7 @@ function FramedCTA() {
           Discover how my creativity transforms ideas into impactful digital
           experiences — schedule a call with me to get started.
         </p>
-        <MagneticButton variant="dark">Let&apos;s talk</MagneticButton>
+        <MagneticButton variant="dark" href="/contact">Let&apos;s talk</MagneticButton>
       </div>
 
       <div className="flex flex-col justify-between shrink-0 w-6">

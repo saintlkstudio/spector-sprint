@@ -3,14 +3,12 @@
 /*
   ABOUT STATS
   ───────────
-  Four key numbers displayed in a 2-col (mobile) / 4-col (desktop) grid on
+  Four key numbers displayed in a 2-col (mobile) / flex-row (desktop) layout on
   an off-white (#f3f3f3) background — same colour used by NewsSection.
 
-  Typography matches the staircase sections: font-light, tight tracking, the
-  same 6.67 vw scale on desktop so numbers feel part of the same type system.
-
   Animation: GSAP ScrollTrigger fires once — each stat fades in and slides up
-  with a staggered delay, identical to the reveal cadence used across the site.
+  with a staggered delay. Each number also counts from 0 to its target value,
+  timed to start with its item's fade-in.
 */
 
 import { useRef, useEffect } from 'react';
@@ -27,6 +25,7 @@ const stats = [
 export default function AboutStats() {
   const sectionRef = useRef<HTMLElement>(null);
   const statRefs   = useRef<(HTMLDivElement | null)[]>([]);
+  const numRefs    = useRef<(HTMLParagraphElement | null)[]>([]);
 
   useEffect(() => {
     gsap.registerPlugin(ScrollTrigger);
@@ -45,12 +44,38 @@ export default function AboutStats() {
       },
     });
 
+    // Staggered fade-in
     tl.to(items, {
       opacity: 1,
       y: 0,
       duration: 0.7,
       ease: 'power3.out',
       stagger: 0.12,
+    });
+
+    // Counter animation per stat, starting in sync with each item's fade-in
+    stats.forEach((s, i) => {
+      const el = numRefs.current[i];
+      if (!el) return;
+
+      const match = s.number.match(/^(\d+)(.*)$/);
+      if (!match) return;
+      const target = parseInt(match[1], 10);
+      const suffix = match[2];
+
+      const counter = { val: 0 };
+      tl.to(
+        counter,
+        {
+          val: target,
+          duration: 1.5,
+          ease: 'power2.out',
+          onUpdate: () => {
+            el.textContent = `${Math.round(counter.val)}${suffix}`;
+          },
+        },
+        i * 0.12, // matches the stagger offset of the fade-in
+      );
     });
 
     return () => {
@@ -71,14 +96,17 @@ export default function AboutStats() {
       </div>
 
       {/* Stats grid */}
-      <div className="mx-auto w-fit grid grid-cols-2 md:grid-cols-4 gap-y-12 gap-x-[71px]">
+      <div className="mx-auto w-full md:w-[90%] grid grid-cols-2 gap-y-12 gap-x-8 md:flex md:flex-row md:justify-between md:items-start md:gap-0">
         {stats.map((s, i) => (
           <div
             key={i}
             ref={(el) => { statRefs.current[i] = el; }}
             className="flex flex-col gap-3"
           >
-            <p className="font-light text-[56px] md:text-[6.67vw] tracking-[-0.08em] leading-[0.86] text-black uppercase">
+            <p
+              ref={(el) => { numRefs.current[i] = el; }}
+              className="font-light text-[56px] md:text-[6.67vw] tracking-[-0.08em] leading-[0.86] text-black uppercase"
+            >
               {s.number}
             </p>
             <p className="font-mono text-[12px] text-[#1f1f1f] uppercase leading-[1.3] tracking-[-0.02em]">

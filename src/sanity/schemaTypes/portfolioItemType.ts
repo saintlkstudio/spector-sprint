@@ -66,6 +66,25 @@ export const portfolioItemType = defineType({
       description: 'Optional link to the live project (the ↗ arrow button).',
     }),
     defineField({
+      name: 'client',
+      title: 'Client',
+      type: 'string',
+      description: 'Company or client name displayed on the projects page.',
+    }),
+    defineField({
+      name: 'year',
+      title: 'Year Completed',
+      type: 'string',
+      description: 'Year the project was completed, e.g. "2024".',
+    }),
+    defineField({
+      name: 'result',
+      title: 'Brief Result',
+      type: 'text',
+      rows: 2,
+      description: 'One or two sentences on the outcome. Shown on the projects list page.',
+    }),
+    defineField({
       name: 'description',
       title: 'Description',
       type: 'text',

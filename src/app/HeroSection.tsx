@@ -76,7 +76,7 @@ export default function HeroSection() {
     <section
       ref={sectionRef}
       data-hero
-      className="relative h-screen overflow-hidden flex flex-col px-4 md:px-8 pb-6 md:pb-0"
+      className="relative h-screen overflow-hidden flex flex-col px-4 md:px-8 pb-6 md:pb-0 bg-white"
     >
       {/* ── Background images ─────────────────────────────────── */}
       {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -153,7 +153,7 @@ export default function HeroSection() {
               {' '}design and art group specializing in branding, web design
               and engineering.
             </p>
-            <MagneticButton variant="dark">Let&apos;s talk</MagneticButton>
+            <MagneticButton variant="dark" href="/contact">Let&apos;s talk</MagneticButton>
           </div>
         </div>
 

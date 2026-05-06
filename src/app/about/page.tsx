@@ -30,13 +30,17 @@ export const metadata: Metadata = {
 export default function AboutPage() {
   return (
     <main>
-      <AboutHero />
-      <AboutManifesto />
-      <AboutBio />
-      <FullBleedPhoto />
-      <AboutValues />
-      <AboutStats />
-      <FooterSection />
+      <div className="relative z-10">
+        <AboutHero />
+        <AboutManifesto />
+        <AboutBio />
+        <FullBleedPhoto />
+        <AboutValues />
+        <AboutStats />
+      </div>
+      <div className="sticky bottom-0">
+        <FooterSection />
+      </div>
     </main>
   );
 }

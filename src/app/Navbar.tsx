@@ -2,6 +2,7 @@
 
 import React, { useRef, useEffect, useCallback } from 'react';
 import Link from 'next/link';
+import { useRouter, usePathname } from 'next/navigation';
 import gsap from 'gsap';
 import MagneticButton from './MagneticButton';
 
@@ -38,7 +39,9 @@ function DesktopLink({
   linkRef: React.RefObject<HTMLAnchorElement | null>;
   href?: string;
 }) {
-  const tlRef = useRef<gsap.core.Timeline | null>(null);
+  const tlRef    = useRef<gsap.core.Timeline | null>(null);
+  const pathname = usePathname();
+  const isActive = href ? pathname === href : false;
 
   useEffect(() => {
     const el = linkRef.current;
@@ -58,12 +61,14 @@ function DesktopLink({
       style={{ display: 'inline-block' }}
     >
       {link}
-      <span className="absolute left-0 -bottom-[2px] h-[1.5px] w-0 bg-current group-hover:w-full transition-[width] duration-300 ease-in-out" />
+      <span className={`absolute left-0 -bottom-[2px] h-[1.5px] bg-current transition-[width] duration-300 ease-in-out ${isActive ? 'w-full' : 'w-0 group-hover:w-full'}`} />
     </a>
   );
 }
 
 export default function Navbar() {
+  const router = useRouter();
+
   // ── Mobile menu refs ───────────────────────────────────────
   const overlayRef      = useRef<HTMLDivElement>(null);
   const headerRef       = useRef<HTMLDivElement>(null);
@@ -88,8 +93,8 @@ export default function Navbar() {
     isDarkRef.current = dark;
     const fg = dark ? '#ffffff' : '#000000';
 
-    gsap.to([logoRef.current, hamburgerRef.current], { color: fg, duration: 0.4, ease: 'power2.out' });
-    gsap.to(desktopLinkRefs.current.map(r => r.current), { color: fg, duration: 0.4, ease: 'power2.out' });
+    gsap.to([logoRef.current, hamburgerRef.current].filter(Boolean), { color: fg, duration: 0.4, ease: 'power2.out' });
+    gsap.to(desktopLinkRefs.current.map(r => r.current).filter(Boolean), { color: fg, duration: 0.4, ease: 'power2.out' });
 
     // Button: swap background and text; update fill colour for next hover
     gsap.to(ctaWrapRef.current, { backgroundColor: dark ? '#ffffff' : '#000000', duration: 0.4, ease: 'power2.out' });
@@ -209,7 +214,7 @@ export default function Navbar() {
               key={link}
               link={link}
               linkRef={desktopLinkRefs.current[i]}
-              href={link === 'About' ? '/about' : undefined}
+              href={link === 'About' ? '/about' : link === 'Services' ? '/services' : link === 'Projects' ? '/projects' : link === 'Contact' ? '/contact' : undefined}
             />
           ))}
         </div>
@@ -228,6 +233,7 @@ export default function Navbar() {
         {/* Desktop CTA — built inline for full colour-switch control */}
         <button
           ref={ctaWrapRef}
+          onClick={() => router.push('/contact')}
           className="hidden md:inline-flex items-center justify-center relative overflow-hidden rounded-full text-[14px] font-medium tracking-[-0.04em] px-4 py-3 cursor-pointer"
           style={{ backgroundColor: '#000' }}
         >
@@ -270,7 +276,7 @@ export default function Navbar() {
             <div key={link} className="overflow-hidden">
               <a
                 ref={(el) => { linkInnerRefs.current[i] = el; }}
-                href={link === 'About' ? '/about' : `#${link.toLowerCase()}`}
+                href={link === 'About' ? '/about' : link === 'Services' ? '/services' : link === 'Projects' ? '/projects' : link === 'Contact' ? '/contact' : `#${link.toLowerCase()}`}
                 onClick={closeMenu}
                 style={{ display: 'block' }}
                 className="font-light text-[8vw] tracking-[-0.04em] capitalize text-white leading-none"
@@ -282,7 +288,7 @@ export default function Navbar() {
         </nav>
 
         <div ref={mobileCtaRef} className="self-start mt-8 shrink-0">
-          <MagneticButton variant="outline-white">Let&apos;s talk</MagneticButton>
+          <MagneticButton variant="outline-white" href="/contact">Let&apos;s talk</MagneticButton>
         </div>
       </div>
     </>

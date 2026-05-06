@@ -1,6 +1,7 @@
 'use client';
 
 import { useRef, useCallback, type ReactNode } from 'react';
+import { useRouter } from 'next/navigation';
 import gsap from 'gsap';
 
 interface Props {
@@ -8,6 +9,9 @@ interface Props {
   children: ReactNode;
   className?: string;
   onClick?: () => void;
+  type?: 'button' | 'submit' | 'reset';
+  disabled?: boolean;
+  href?: string;
 }
 
 /*
@@ -18,7 +22,8 @@ interface Props {
      background), and retreats to the right on leave, inverting text colour
      for the duration.
 */
-export default function MagneticButton({ variant, children, className = '', onClick }: Props) {
+export default function MagneticButton({ variant, children, className = '', onClick, type = 'button', disabled = false, href }: Props) {
+  const router = useRouter();
   const wrapRef  = useRef<HTMLButtonElement>(null);
   const fillRef  = useRef<HTMLSpanElement>(null);
   const textRef  = useRef<HTMLSpanElement>(null);
@@ -76,11 +81,13 @@ export default function MagneticButton({ variant, children, className = '', onCl
   return (
     <button
       ref={wrapRef}
-      onClick={onClick}
+      type={type}
+      onClick={() => { href ? router.push(href) : onClick?.(); }}
       onMouseMove={onMouseMove}
       onMouseEnter={onMouseEnter}
       onMouseLeave={onMouseLeave}
-      className={`self-start relative overflow-hidden rounded-full text-[14px] font-medium tracking-[-0.04em] px-4 py-3 cursor-pointer ${baseClass} ${className}`}
+      disabled={disabled}
+      className={`self-start relative overflow-hidden rounded-full text-[14px] font-medium tracking-[-0.04em] px-4 py-3 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed ${baseClass} ${className}`}
       style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center' }}
     >
       {/* Sliding fill slab */}

@@ -41,7 +41,7 @@ export default function FooterSection() {
               <strong className="font-black not-italic">project</strong>
               {' '}in mind?
             </p>
-            <MagneticButton variant="outline-white">Let&apos;s talk</MagneticButton>
+            <MagneticButton variant="outline-white" href="/contact">Let&apos;s talk</MagneticButton>
           </div>
 
           {/* Centre — Facebook / Instagram  (desktop only) */}

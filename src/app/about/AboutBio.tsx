@@ -48,26 +48,27 @@ export default function AboutBio() {
     const section = sectionRef.current;
     if (!section) return;
 
-    const targets = [quoteRef.current, col1Ref.current, col2Ref.current, para3Ref.current].filter(Boolean) as HTMLElement[];
-    gsap.set(targets, { opacity: 0, y: 32 });
+    const triggerConfig = { trigger: section, start: 'top 78%', once: true };
 
-    const tl = gsap.timeline({
-      scrollTrigger: {
-        trigger: section,
-        start: 'top 78%',
-        once: true,
-      },
-    });
+    // Quote slides in from the left
+    const quoteAnim = gsap.fromTo(
+      quoteRef.current,
+      { opacity: 0, x: -80 },
+      { opacity: 1, x: 0, duration: 0.6, delay: 0.5, ease: 'power2.inOut', scrollTrigger: triggerConfig },
+    );
 
-    tl.to(targets, {
-      opacity: 1,
-      y: 0,
-      duration: 0.75,
-      ease: 'power3.out',
-      stagger: 0.14,
-    });
+    // Paragraphs slide in from the right, staggered
+    const paras = [col1Ref.current, col2Ref.current, para3Ref.current].filter(Boolean) as HTMLElement[];
+    const parasAnim = gsap.fromTo(
+      paras,
+      { opacity: 0, x: 80 },
+      { opacity: 1, x: 0, duration: 0.6, delay: 0.5, ease: 'power2.inOut', stagger: 0.14, scrollTrigger: triggerConfig },
+    );
 
-    return () => { tl.scrollTrigger?.kill(); tl.kill(); };
+    return () => {
+      quoteAnim.scrollTrigger?.kill(); quoteAnim.kill();
+      parasAnim.scrollTrigger?.kill(); parasAnim.kill();
+    };
   }, []);
 
   return (
@@ -91,7 +92,7 @@ export default function AboutBio() {
         {/* Left column: pull-quote */}
         <p
           ref={quoteRef}
-          className="font-light italic text-[22px] md:text-[32px] tracking-[-0.04em] leading-[1.2] text-[#1f1f1f] md:ml-8 md:-mt-[38px]"
+          className="font-light italic text-[22px] md:text-[32px] tracking-[-0.04em] leading-[1.25] text-[#1f1f1f] md:ml-8 md:-mt-[38px]"
         >
           {pullQuote}
         </p>
@@ -100,19 +101,19 @@ export default function AboutBio() {
         <div className="flex flex-col gap-5">
           <p
             ref={col1Ref}
-            className="font-normal text-[14px] text-[#1f1f1f] leading-[1.5] tracking-[-0.04em]"
+            className="font-normal text-[14px] md:text-[18px] text-[#1f1f1f] leading-[1.5] tracking-[-0.04em]"
           >
             {para1}
           </p>
           <p
             ref={col2Ref}
-            className="font-normal text-[14px] text-[#1f1f1f] leading-[1.5] tracking-[-0.04em]"
+            className="font-normal text-[14px] md:text-[18px] text-[#1f1f1f] leading-[1.5] tracking-[-0.04em]"
           >
             {para2}
           </p>
           <p
             ref={para3Ref}
-            className="font-normal text-[14px] text-[#1f1f1f] leading-[1.5] tracking-[-0.04em]"
+            className="font-normal text-[14px] md:text-[18px] text-[#1f1f1f] leading-[1.5] tracking-[-0.04em]"
           >
             {para3}
           </p>
