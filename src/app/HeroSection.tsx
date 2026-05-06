@@ -5,10 +5,8 @@ import gsap from 'gsap';
 import Navbar from './Navbar';
 import MagneticButton from './MagneticButton';
 
-const heroImageDesktop =
-  'https://www.figma.com/api/mcp/asset/1074d048-958d-49cd-a2cd-e481b24ba415';
-const heroImageMobile =
-  'https://www.figma.com/api/mcp/asset/95eabbd6-0270-4b32-b1bb-92294bb5a49d';
+const heroImageDesktop = '/specter-hero-image-desktop.jpg';
+const heroImageMobile  = '/specter-hero-image-mobile.jpg';
 
 const heroMask = {
   WebkitMaskImage:
@@ -109,21 +107,18 @@ export default function HeroSection() {
       <div className="relative mt-auto md:mt-60 shrink-0 flex flex-col">
 
         {/* DESKTOP — single-line "Harvey   Specter" */}
-        <div className="hidden md:flex justify-center w-full pb-[15px]">
-          <div className="flex flex-col items-start">
-            <p
-              ref={helloDesktopRef}
-              className="font-mono text-white text-[14px] uppercase mix-blend-overlay leading-[1.1]"
-              style={{ display: 'inline-block' }}
-            >
-              [ Hello i&apos;m ]
-            </p>
-            <h1 className="font-medium text-white capitalize mix-blend-overlay text-[13.75vw] leading-[1.1] tracking-[-0.07em] whitespace-nowrap -mt-[15px]">
-              <span ref={harveyDesktopRef}  style={{ display: 'inline-block' }}>Harvey</span>
-              {'   '}
-              <span ref={specterDesktopRef} style={{ display: 'inline-block' }}>Specter</span>
-            </h1>
-          </div>
+        <div className="hidden md:flex flex-col w-full pb-[15px]">
+          <p
+            ref={helloDesktopRef}
+            className="font-mono text-white text-[14px] uppercase mix-blend-overlay leading-[1.1]"
+            style={{ display: 'inline-block' }}
+          >
+            [ Hello i&apos;m ]
+          </p>
+          <h1 className="font-medium text-white capitalize mix-blend-overlay text-[13.75vw] leading-[1.1] tracking-[-0.07em] flex justify-between w-full -mt-[15px]">
+            <span ref={harveyDesktopRef}  style={{ display: 'inline-block' }}>Harvey</span>
+            <span ref={specterDesktopRef} style={{ display: 'inline-block' }}>Specter</span>
+          </h1>
         </div>
 
         {/* MOBILE — two-line title */}

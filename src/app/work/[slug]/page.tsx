@@ -16,6 +16,12 @@ type Specs = {
   client?: string;
 };
 
+type NavProject = {
+  _id: string;
+  title: string;
+  slug?: { current: string };
+};
+
 type PortfolioDetail = {
   _id: string;
   title: string;
@@ -26,14 +32,17 @@ type PortfolioDetail = {
   imageUrl?: string;
   order: number;
   description?: string;
+  result?: string;
   specs?: Specs;
 };
 
 // ── Query ─────────────────────────────────────────────────────────────────────
 
+const ALL_PROJECTS_QUERY = `*[_type == "portfolioItem"] | order(order asc) { _id, title, slug }`;
+
 const DETAIL_QUERY = `
   *[_type == "portfolioItem" && slug.current == $slug][0] {
-    _id, title, slug, tags, image, imageUrl, order, description,
+    _id, title, slug, tags, image, imageUrl, order, description, result,
     specs { camera, lens, shutterSpeed, iso, client }
   }
 `;
@@ -62,7 +71,7 @@ function SpecBlock({ label, value }: { label: string; value?: string }) {
       <p className="font-mono text-[12px] text-[#999] uppercase tracking-[0.06em] leading-[1.1]">
         {label}
       </p>
-      <p className="font-light text-[28px] md:text-[36px] text-black tracking-[-0.04em] leading-[1.05]">
+      <p className="font-light text-[21px] md:text-[27px] text-black tracking-[-0.04em] leading-[1.05]">
         {value}
       </p>
     </div>
@@ -75,8 +84,12 @@ export default async function WorkDetailPage(
   { params }: { params: Promise<{ slug: string }> }
 ) {
   const { slug } = await params;
-  const { data } = await sanityFetch({ query: DETAIL_QUERY, params: { slug } });
-  const item = data as PortfolioDetail | null;
+  const [{ data }, { data: navData }] = await Promise.all([
+    sanityFetch({ query: DETAIL_QUERY, params: { slug } }),
+    sanityFetch({ query: ALL_PROJECTS_QUERY }),
+  ]);
+  const item        = data as PortfolioDetail | null;
+  const allProjects = (navData ?? []) as NavProject[];
 
   if (!item) notFound();
 
@@ -121,15 +134,37 @@ export default async function WorkDetailPage(
             Selected Work
           </Link>
 
-          <div className="flex flex-wrap justify-end gap-2">
-            {item.tags?.map((tag) => (
-              <span
-                key={tag}
-                className="font-mono text-[12px] text-[#1f1f1f] uppercase border border-[#1f1f1f]/30 px-3 py-1 rounded-full leading-[1.1]"
-              >
-                {tag}
-              </span>
-            ))}
+          <div className="flex flex-col items-end gap-3">
+            <div className="flex flex-wrap justify-end gap-2">
+              {item.tags?.map((tag) => (
+                <span
+                  key={tag}
+                  className="font-mono text-[12px] text-[#1f1f1f] uppercase border border-[#1f1f1f]/30 px-3 py-1 rounded-full leading-[1.1]"
+                >
+                  {tag}
+                </span>
+              ))}
+            </div>
+            <div className="flex items-center mt-[30px]">
+              {allProjects.map((p, i) => {
+                const href = p.slug?.current ? `/work/${p.slug.current}` : null;
+                const isActive = p.slug?.current === slug;
+                return (
+                  <span key={p._id} className="flex items-center">
+                    {i > 0 && <span className="font-mono text-[12px] text-[#1f1f1f]/30 mx-2">|</span>}
+                    {href && !isActive ? (
+                      <Link href={href} className="font-mono text-[12px] text-[#1f1f1f]/60 uppercase leading-[1.1] hover:opacity-100 transition-opacity duration-200">
+                        {p.title}
+                      </Link>
+                    ) : (
+                      <span className="font-mono text-[12px] text-[#191919] uppercase leading-[1.1]">
+                        {p.title}
+                      </span>
+                    )}
+                  </span>
+                );
+              })}
+            </div>
           </div>
         </div>
 
@@ -161,20 +196,9 @@ export default async function WorkDetailPage(
         {/* Rule */}
         <div className="h-px w-full bg-black/10 mb-12 md:mb-[60px]" />
 
-        {/* Row 4 — specs grid */}
-        {item.specs && (
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-y-10 gap-x-6">
-            <SpecBlock label="Camera"        value={item.specs.camera} />
-            <SpecBlock label="Lens"          value={item.specs.lens} />
-            <SpecBlock label="Shutter Speed" value={item.specs.shutterSpeed} />
-            <SpecBlock label="ISO"           value={item.specs.iso} />
-          </div>
-        )}
-
-        {/* Client — full-width row below grid, visually heavier */}
+        {/* Row 4 — client */}
         {item.specs?.client && (
           <>
-            <div className="h-px w-full bg-black/10 mt-12 md:mt-[60px] mb-12 md:mb-[60px]" />
             <div className="flex flex-col md:flex-row items-start md:items-end gap-4 md:gap-[80px]">
               <p className="font-mono text-[12px] text-[#999] uppercase tracking-[0.06em] leading-[1.1] shrink-0 md:w-[200px]">
                 Client
@@ -183,7 +207,38 @@ export default async function WorkDetailPage(
                 {item.specs.client}
               </p>
             </div>
+            <div className="h-px w-full bg-black/10 mt-12 md:mt-[60px] mb-12 md:mb-[60px]" />
           </>
+        )}
+
+        {/* Row 5 — result */}
+        {item.result && (
+          <>
+            <div className="flex flex-col md:flex-row gap-6 md:gap-[80px]">
+              <p className="font-mono text-[12px] text-[#999] uppercase tracking-[0.06em] leading-[1.1] shrink-0 md:w-[200px] pt-1">
+                Result
+              </p>
+              <p className="font-normal text-[16px] md:text-[18px] text-[#1f1f1f] leading-[1.5] tracking-[-0.03em] max-w-[680px]">
+                {item.result}
+              </p>
+            </div>
+            <div className="h-px w-full bg-black/10 mt-12 md:mt-[60px] mb-12 md:mb-[60px]" />
+          </>
+        )}
+
+        {/* Row 6 — specs grid, aligned to paragraph column */}
+        {item.specs && (
+          <div className="flex flex-col md:flex-row gap-6 md:gap-[80px]">
+            <p className="hidden md:block font-mono text-[12px] text-[#999] uppercase tracking-[0.06em] leading-[1.1] md:w-[200px] shrink-0 pt-1">
+              Details
+            </p>
+            <div className="flex flex-wrap gap-x-[60px] gap-y-8">
+              <SpecBlock label="Camera"        value={item.specs.camera} />
+              <SpecBlock label="Lens"          value={item.specs.lens} />
+              <SpecBlock label="Shutter Speed" value={item.specs.shutterSpeed} />
+              <SpecBlock label="ISO"           value={item.specs.iso} />
+            </div>
+          </div>
         )}
 
       </section>

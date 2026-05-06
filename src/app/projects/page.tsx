@@ -107,7 +107,7 @@ export default async function ProjectsPage() {
                     <div className="w-[140px] h-[90px] bg-[#f3f3f3] shrink-0" />
                   )}
 
-                  {/* Title + result */}
+                  {/* Title */}
                   <div className="flex flex-col gap-2 min-w-0">
                     <div className="flex items-center gap-3">
                       {href ? (
@@ -123,11 +123,6 @@ export default async function ProjectsPage() {
                       )}
                       <MagneticArrow href={href} />
                     </div>
-                    {p.result && (
-                      <p className="font-normal text-[13px] text-[#555] leading-[1.5] tracking-[-0.02em]">
-                        {p.result}
-                      </p>
-                    )}
                   </div>
 
                   {/* Client */}
@@ -211,11 +206,6 @@ export default async function ProjectsPage() {
                     )}
                   </div>
 
-                  {p.result && (
-                    <p className="font-normal text-[13px] text-[#555] leading-[1.5] tracking-[-0.02em]">
-                      {p.result}
-                    </p>
-                  )}
                 </div>
               </div>
             );

@@ -37,42 +37,37 @@ const para3 =
   'Today, H.Studio operates as a senior, intentionally small team. No juniors, no volume, no filler. Every project is led by Harvey personally, with a trusted network of specialists brought in when the scope demands it. The studio is selective by design: fewer clients, deeper engagement, and outcomes that last.';
 
 export default function AboutBio() {
-  const sectionRef    = useRef<HTMLElement>(null);
-  const quoteRef      = useRef<HTMLParagraphElement>(null);
-  const col1Ref       = useRef<HTMLParagraphElement>(null);
-  const col2Ref       = useRef<HTMLParagraphElement>(null);
-  const para3Ref      = useRef<HTMLParagraphElement>(null);
+  const sectionRef  = useRef<HTMLElement>(null);
+  const quoteRef    = useRef<HTMLParagraphElement>(null);
+  const parasRef    = useRef<HTMLDivElement>(null);
+  const parasRef2   = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     gsap.registerPlugin(ScrollTrigger);
     const section = sectionRef.current;
     if (!section) return;
 
-    const triggerConfig = { trigger: section, start: 'top 78%', once: true };
+    const tl = gsap.timeline({
+      scrollTrigger: {
+        trigger: section,
+        start: 'top center',
+        end: 'bottom top',
+        scrub: 1.5,
+      },
+    });
 
-    // Quote slides in from the left
-    const quoteAnim = gsap.fromTo(
-      quoteRef.current,
-      { opacity: 0, x: -80 },
-      { opacity: 1, x: 0, duration: 0.6, delay: 0.5, ease: 'power2.inOut', scrollTrigger: triggerConfig },
-    );
-
-    // Paragraphs slide in from the right, staggered
-    const paras = [col1Ref.current, col2Ref.current, para3Ref.current].filter(Boolean) as HTMLElement[];
-    const parasAnim = gsap.fromTo(
-      paras,
-      { opacity: 0, x: 80 },
-      { opacity: 1, x: 0, duration: 0.6, delay: 0.5, ease: 'power2.inOut', stagger: 0.14, scrollTrigger: triggerConfig },
-    );
+    tl.to(quoteRef.current,  { x: '-60vw', ease: 'none' }, 0);
+    tl.to([parasRef.current, parasRef2.current], { x: '60vw', ease: 'none' }, 0);
 
     return () => {
-      quoteAnim.scrollTrigger?.kill(); quoteAnim.kill();
-      parasAnim.scrollTrigger?.kill(); parasAnim.kill();
+      tl.scrollTrigger?.kill();
+      tl.kill();
+      gsap.set([quoteRef.current, parasRef.current, parasRef2.current], { clearProps: 'transform' });
     };
   }, []);
 
   return (
-    <section ref={sectionRef} id="bio" className="px-4 md:px-8 py-12 md:pt-[80px] md:pb-[120px] bg-white">
+    <section ref={sectionRef} id="bio" className="px-4 md:px-8 py-12 md:pt-[80px] md:pb-[120px] bg-white" style={{ overflowX: 'clip' }}>
 
       {/* Header: [ Bio ] — rule — 002 */}
       <div className="flex items-center gap-6 mb-12 md:mb-[104px]">
@@ -85,36 +80,27 @@ export default function AboutBio() {
         </p>
       </div>
 
-      {/* Desktop: 2-col grid — quote left, paragraphs right.
-          Mobile:  single column — quote then paragraphs stacked. */}
-      <div className="flex flex-col md:grid md:grid-cols-2 md:items-center md:gap-16 gap-10">
+      <div className="flex flex-col gap-5 md:max-w-[662px] md:mx-auto">
 
-        {/* Left column: pull-quote */}
+        <div ref={parasRef} className="flex flex-col gap-5">
+          <p className="font-normal text-[14px] md:text-[18px] text-[#1f1f1f] leading-[1.5] tracking-[-0.04em]">
+            {para1}
+          </p>
+        </div>
+
+        {/* Pull-quote — between para 1 and para 2 */}
         <p
           ref={quoteRef}
-          className="font-light italic text-[22px] md:text-[32px] tracking-[-0.04em] leading-[1.25] text-[#1f1f1f] md:ml-8 md:-mt-[38px]"
+          className="font-light italic text-[24px] md:text-[35px] tracking-[-0.04em] leading-[1.25] text-[#1f1f1f] py-3 md:py-[40px]"
         >
           {pullQuote}
         </p>
 
-        {/* Right column: paragraphs */}
-        <div className="flex flex-col gap-5">
-          <p
-            ref={col1Ref}
-            className="font-normal text-[14px] md:text-[18px] text-[#1f1f1f] leading-[1.5] tracking-[-0.04em]"
-          >
-            {para1}
-          </p>
-          <p
-            ref={col2Ref}
-            className="font-normal text-[14px] md:text-[18px] text-[#1f1f1f] leading-[1.5] tracking-[-0.04em]"
-          >
+        <div ref={parasRef2} className="flex flex-col gap-5">
+          <p className="font-normal text-[14px] md:text-[18px] text-[#1f1f1f] leading-[1.5] tracking-[-0.04em]">
             {para2}
           </p>
-          <p
-            ref={para3Ref}
-            className="font-normal text-[14px] md:text-[18px] text-[#1f1f1f] leading-[1.5] tracking-[-0.04em]"
-          >
+          <p className="font-normal text-[14px] md:text-[18px] text-[#1f1f1f] leading-[1.5] tracking-[-0.04em]">
             {para3}
           </p>
         </div>

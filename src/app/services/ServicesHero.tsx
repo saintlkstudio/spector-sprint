@@ -19,7 +19,7 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import Navbar from '../Navbar';
 import MagneticButton from '../MagneticButton';
 
-const image = 'https://www.figma.com/api/mcp/asset/1074d048-958d-49cd-a2cd-e481b24ba415';
+const image = '/specter-hero-image-desktop.jpg';
 
 export default function ServicesHero() {
   const sectionRef   = useRef<HTMLElement>(null);

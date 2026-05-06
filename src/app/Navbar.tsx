@@ -202,7 +202,7 @@ export default function Navbar() {
       <nav className="fixed top-0 left-0 right-0 z-40 flex items-center justify-between py-6 px-4 md:px-8">
 
         <Link href="/">
-          <span ref={logoRef} className="font-semibold text-[16px] tracking-[-0.04em] capitalize" style={{ color: '#000' }}>
+          <span ref={logoRef} className="font-semibold text-[16px] md:text-[18px] tracking-[-0.04em] capitalize" style={{ color: '#000' }}>
             H.Studio
           </span>
         </Link>
