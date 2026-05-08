@@ -1,22 +1,24 @@
 'use client';
 
 /*
-  ABOUT SECTION
-  ─────────────
-  Desktop: two-column — section label on far left, framed text + portrait on right.
-  Mobile:  stacked — 002 → [ About ] → framed text → full-width portrait.
+  ABOUT STORY
+  ───────────
+  Direct adaptation of AboutSection (home). Identical animations:
+  — Portrait reveals left-to-right via clip-path, triggered once the hero
+    has fully scrolled off and the image approaches the viewport top.
+  — Framed text block slides left as the section scrolls out.
 
-  Animation: framed text block slides off to the left as the section scrolls out.
+  Desktop: [ Story ] label far-left, framed bio + portrait right-aligned.
+  Mobile:  stacked — 002 → [ Story ] → framed bio → portrait.
 */
 
 import { useRef, useEffect } from 'react';
 import gsap from 'gsap';
 
-const photoDesktop = '/half-face.jpg';
-const photoMobile  = '/half-face.jpg';
+const portraitD = 'https://www.figma.com/api/mcp/asset/f63d6845-e5f7-41ae-a7bb-3dfe66ee59ee';
+const portraitM = 'https://www.figma.com/api/mcp/asset/b672052f-6974-4362-97da-b429c13b828c';
 
 type CornerPos = 'tl' | 'tr' | 'bl' | 'br';
-
 const cornerPaths: Record<CornerPos, string> = {
   tl: 'M0 8 L0 0 L8 0',
   tr: 'M8 0 L16 0 L16 8',
@@ -32,32 +34,10 @@ function Corner({ pos }: { pos: CornerPos }) {
   );
 }
 
-function FramedText() {
-  return (
-    <div className="flex gap-3 items-stretch w-full">
-      <div className="flex flex-col justify-between shrink-0 w-6">
-        <Corner pos="tl" />
-        <Corner pos="bl" />
-      </div>
-      <div className="flex-1 flex items-center py-3 min-w-0">
-        <p className="font-normal text-[14px] text-[#1f1f1f] leading-[1.3] tracking-[-0.04em]">
-          Placeholder paragraph one. This is where you introduce yourself —
-          your background, your passion for your craft, and what drives you
-          creatively. Two to three sentences work best here. Placeholder
-          paragraph two. Here you can describe your technical approach, how you
-          collaborate with clients, or what sets your work apart from others in
-          your field.
-        </p>
-      </div>
-      <div className="flex flex-col justify-between shrink-0 w-6">
-        <Corner pos="tr" />
-        <Corner pos="br" />
-      </div>
-    </div>
-  );
-}
+const bio =
+  'Harvey Specter founded H.Studio after a decade shaping the visual identities of global brands. Equal parts strategist and craftsman, he believes great design is never decoration — it is the clearest expression of a brand\'s truth. Born and raised on the south side of Chicago, he brings a distinct perspective to every project: bold, disciplined, and deeply human. The studio exists to make that truth visible, memorable, and impossible to ignore.';
 
-export default function AboutSection() {
+export default function AboutStory() {
   const sectionRef      = useRef<HTMLElement>(null);
   const textDesktopRef  = useRef<HTMLDivElement>(null);
   const textMobileRef   = useRef<HTMLDivElement>(null);
@@ -77,7 +57,6 @@ export default function AboutSection() {
 
     let textProgress  = 0; let textTarget  = 0;
     let imageProgress = 0; let imageTarget = 0;
-
     let imageFullSince: number | null = null;
     let textGateOpen = false;
 
@@ -135,36 +114,49 @@ export default function AboutSection() {
   }, []);
 
   return (
-    <section ref={sectionRef} className="px-4 md:px-8 py-12 md:py-[200px] bg-white overflow-hidden" id="about">
+    <section
+      ref={sectionRef}
+      id="story"
+      className="px-4 md:px-8 py-12 md:py-[200px] bg-white overflow-hidden"
+    >
 
       {/* ════ DESKTOP ════════════════════════════════════════════════════════ */}
       <div className="hidden md:flex items-start justify-between gap-8">
 
         <p className="font-mono text-[14px] text-[#1f1f1f] uppercase leading-[1.1] shrink-0 pt-1">
-          [ About ]
+          [ Story ]
         </p>
 
         <div className="flex flex-1 min-w-0 gap-8 items-end justify-end">
 
-          {/* Animated text block */}
+          {/* Animated framed bio */}
           <div ref={textDesktopRef} className="w-[384px] shrink min-w-0 self-stretch flex items-end">
-            <FramedText />
+            <div className="flex gap-3 items-stretch w-full">
+              <div className="flex flex-col justify-between shrink-0 w-6">
+                <Corner pos="tl" /><Corner pos="bl" />
+              </div>
+              <div className="flex-1 flex items-center py-3 min-w-0">
+                <p className="font-normal text-[14px] text-[#1f1f1f] leading-[1.3] tracking-[-0.04em]">
+                  {bio}
+                </p>
+              </div>
+              <div className="flex flex-col justify-between shrink-0 w-6">
+                <Corner pos="tr" /><Corner pos="br" />
+              </div>
+            </div>
           </div>
 
           <div className="flex gap-6 items-start shrink-0">
-            <p className="font-mono text-[14px] text-[#1f1f1f] uppercase leading-[1.1]">
-              002
-            </p>
+            <p className="font-mono text-[14px] text-[#1f1f1f] uppercase leading-[1.1]">002</p>
             <div ref={imageDesktopRef} className="relative w-[35vw] aspect-[436/614] overflow-hidden shrink-0">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
-                src={photoDesktop}
-                alt="Harvey Specter close-up portrait"
+                src={portraitD}
+                alt="Harvey Specter portrait"
                 className="absolute inset-0 w-full h-full object-cover"
               />
             </div>
           </div>
-
         </div>
       </div>
 
@@ -172,23 +164,34 @@ export default function AboutSection() {
       <div className="flex flex-col gap-5 md:hidden">
 
         <p className="font-mono text-[14px] text-[#1f1f1f] uppercase leading-[1.1]">002</p>
-        <p className="font-mono text-[14px] text-[#1f1f1f] uppercase leading-[1.1]">[ About ]</p>
+        <p className="font-mono text-[14px] text-[#1f1f1f] uppercase leading-[1.1]">[ Story ]</p>
 
-        {/* Animated text block */}
         <div ref={textMobileRef}>
-          <FramedText />
+          <div className="flex gap-3 items-stretch w-full">
+            <div className="flex flex-col justify-between shrink-0 w-6">
+              <Corner pos="tl" /><Corner pos="bl" />
+            </div>
+            <div className="flex-1 flex items-center py-3 min-w-0">
+              <p className="font-normal text-[14px] text-[#1f1f1f] leading-[1.3] tracking-[-0.04em]">
+                {bio}
+              </p>
+            </div>
+            <div className="flex flex-col justify-between shrink-0 w-6">
+              <Corner pos="tr" /><Corner pos="br" />
+            </div>
+          </div>
         </div>
 
         <div ref={imageMobileRef} className="relative w-full aspect-[422/594] overflow-hidden">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
-            src={photoMobile}
-            alt="Harvey Specter close-up portrait"
+            src={portraitM}
+            alt="Harvey Specter portrait"
             className="absolute inset-0 w-full h-full object-cover"
           />
         </div>
-
       </div>
+
     </section>
   );
 }

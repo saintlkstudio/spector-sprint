@@ -5,7 +5,15 @@
            Each row: bold-italic title on the left, description + thumbnail on the right.
 
   Mobile:  "[4] DELIVERABLES" at 32 px, each service stacks title → body → thumbnail.
+
+  Desktop hover effects
+  ─────────────────────
+  Title:     character-scramble on mouseenter — letters cycle through random uppercase
+             chars then lock in left-to-right.
+  Thumbnail: image scales to 110 % from centre on hover (overflow-hidden clips it).
 */
+
+import ScrambleTitle from './ScrambleTitle';
 
 const services = [
   {
@@ -43,10 +51,13 @@ const services = [
   },
 ] as const;
 
+// ── Section ────────────────────────────────────────────────────────────────────
+
 export default function ServicesSection() {
   return (
     <section
       id="services"
+      data-navbar="dark"
       className="bg-black px-4 md:px-8 py-12 md:py-[80px] flex flex-col gap-8 md:gap-12"
     >
       {/* ── Section label ───────────────────────────────────── */}
@@ -71,24 +82,31 @@ export default function ServicesSection() {
             </p>
             <div className="h-px w-full bg-white opacity-30" />
 
-            {/* ── Desktop row: title LEFT / description+image RIGHT ── */}
-            <div className="hidden md:flex items-start justify-between flex-wrap gap-6 pt-[9px]">
-              {/* Title */}
-              <p className="font-bold italic text-[36px] text-white uppercase leading-[1.1] tracking-[-0.04em] shrink-0">
-                {s.title}
-              </p>
+            {/* ── Desktop row ───────────────────────────────────────────────
+                md  (768–1023 px): stacked — title on top, content below.
+                lg+ (1024 px+):   side by side — title left, content right.
+            ─────────────────────────────────────────────────────────────── */}
+            <div className="hidden md:flex flex-col lg:flex-row lg:items-start lg:justify-between gap-6 pt-[9px]">
+
+              {/* Title — scramble on hover */}
+              <ScrambleTitle
+                text={s.title}
+                className="font-bold italic text-[36px] text-white uppercase leading-[1.1] tracking-[-0.04em] shrink-0 cursor-default select-none"
+              />
 
               {/* Description + thumbnail */}
               <div className="flex gap-6 items-start shrink-0">
                 <p className="font-normal text-[14px] text-white leading-[1.3] tracking-[-0.04em] w-[393px]">
                   {s.description}
                 </p>
-                <div className="relative size-[151px] overflow-hidden shrink-0">
+
+                {/* Thumbnail — image scales 10 % from center on hover */}
+                <div className="relative size-[151px] overflow-hidden shrink-0 group/thumb">
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
                     src={s.imgD}
                     alt={s.title}
-                    className="absolute inset-0 w-full h-full object-cover"
+                    className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 ease-out group-hover/thumb:scale-110"
                   />
                 </div>
               </div>

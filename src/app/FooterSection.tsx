@@ -15,6 +15,8 @@
   Horizontal rule: 1 px CSS border (replacing the Figma SVG asset).
 */
 
+import MagneticButton from './MagneticButton';
+
 const socialLinks = [
   { label: 'Facebook', href: '#' },
   { label: 'Instagram', href: '#' },
@@ -24,7 +26,7 @@ const socialLinks = [
 
 export default function FooterSection() {
   return (
-    <footer id="contact" className="bg-black px-4 md:px-8 pt-12 md:pt-[48px]">
+    <footer id="contact" data-navbar="dark" className="bg-black px-4 md:px-8 pt-12 md:pt-[48px]">
 
       {/* ── TOP BLOCK ──────────────────────────────────────────────────────── */}
       <div className="flex flex-col gap-6 md:gap-[48px]">
@@ -39,9 +41,7 @@ export default function FooterSection() {
               <strong className="font-black not-italic">project</strong>
               {' '}in mind?
             </p>
-            <button className="self-start border border-white text-white text-[14px] font-medium tracking-[-0.04em] px-4 py-3 rounded-full hover:bg-white/10 transition-colors">
-              Let&apos;s talk
-            </button>
+            <MagneticButton variant="outline-white" href="/contact">Let&apos;s talk</MagneticButton>
           </div>
 
           {/* Centre — Facebook / Instagram  (desktop only) */}
@@ -76,15 +76,25 @@ export default function FooterSection() {
 
       {/* ── BOTTOM BLOCK — DESKTOP ─────────────────────────────────────────── */}
       {/*
-        The wordmark container is fluid (flex-1). Font size is 20vw so it scales
-        with viewport width (20vw ≈ 290 px at 1440 px). Container height is
-        15.1vw (≈ 75.5 % of font size) so the bottom ~5 % of the letterforms
-        bleeds past the clip edge, matching the original fixed-size behaviour.
+        At xl+ (≥1280 px) the legal links sit absolute bottom-right, overlapping
+        the wordmark area — there is enough width that no letter reaches them.
+        Below xl the links move above the wordmark in normal flow so they never
+        overlap a letter at any narrower desktop width.
       */}
-      <div className="hidden md:flex items-end justify-between mt-[120px]">
+      <div className="hidden md:block xl:relative mt-[120px]">
 
-        {/* Wordmark + rotated label */}
-        <div className="relative overflow-hidden flex-1" style={{ height: '15.1vw' }}>
+        {/* Legal links — in-flow right-aligned at md–xl; absolute bottom-right at xl+ */}
+        <div className="flex gap-[34px] justify-end mb-4 xl:absolute xl:bottom-[32px] xl:right-0 xl:mb-0">
+          <a href="#" className="text-[12px] text-white uppercase tracking-[-0.03em] underline hover:opacity-60 transition-opacity">
+            Licences
+          </a>
+          <a href="#" className="text-[12px] text-white uppercase tracking-[-0.03em] underline hover:opacity-60 transition-opacity">
+            Privacy Policy
+          </a>
+        </div>
+
+        {/* Wordmark + rotated label — always in flow, clips bottom of letterforms */}
+        <div className="relative overflow-hidden h-[15.1vw]">
           {/* [ Coded By Claude ] — vertical rotated label */}
           <div
             className="absolute left-0 w-[15px] h-[160px] flex items-center justify-center"
@@ -108,16 +118,6 @@ export default function FooterSection() {
           >
             H.Studio
           </p>
-        </div>
-
-        {/* Legal links — bottom-right, 32 px from section bottom */}
-        <div className="flex gap-[34px] items-center pb-[32px] shrink-0">
-          <a href="#" className="text-[12px] text-white uppercase tracking-[-0.03em] underline hover:opacity-60 transition-opacity">
-            Licences
-          </a>
-          <a href="#" className="text-[12px] text-white uppercase tracking-[-0.03em] underline hover:opacity-60 transition-opacity">
-            Privacy Policy
-          </a>
         </div>
       </div>
 
