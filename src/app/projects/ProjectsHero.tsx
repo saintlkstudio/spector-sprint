@@ -22,7 +22,7 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import Navbar from '../Navbar';
 import MagneticButton from '../MagneticButton';
 
-const image = 'https://www.figma.com/api/mcp/asset/6b83c32c-d7b1-4f3f-97a3-cec5151bb6ff';
+const image = '/camera-guy.jpg';
 
 export default function ProjectsHero() {
   const sectionRef   = useRef<HTMLElement>(null);

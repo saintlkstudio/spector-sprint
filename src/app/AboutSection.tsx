@@ -12,10 +12,8 @@
 import { useRef, useEffect } from 'react';
 import gsap from 'gsap';
 
-const photoDesktop =
-  'https://www.figma.com/api/mcp/asset/f63d6845-e5f7-41ae-a7bb-3dfe66ee59ee';
-const photoMobile =
-  'https://www.figma.com/api/mcp/asset/b672052f-6974-4362-97da-b429c13b828c';
+const photoDesktop = '/half-face.jpg';
+const photoMobile  = '/half-face.jpg';
 
 type CornerPos = 'tl' | 'tr' | 'bl' | 'br';
 

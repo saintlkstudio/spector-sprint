@@ -16,13 +16,8 @@
 import { useRef, useEffect, type RefObject } from 'react';
 import gsap from 'gsap';
 
-// Desktop — landscape crop (1440 × 900 design spec)
-const photoDesktop =
-  'https://www.figma.com/api/mcp/asset/6b83c32c-d7b1-4f3f-97a3-cec5151bb6ff';
-
-// Mobile — portrait crop returned by Figma for the mobile frame
-const photoMobile =
-  'https://www.figma.com/api/mcp/asset/989ce5c2-6dde-476f-930d-df59caa0359d';
+const photoDesktop = '/camera-guy.jpg';
+const photoMobile  = '/camera-guy.jpg';
 
 const START_PIXEL_SIZE = 64; // block size (px) when fully pixelated
 

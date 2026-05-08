@@ -24,7 +24,7 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import Navbar from '../Navbar';
 import MagneticButton from '../MagneticButton';
 
-const portrait = 'https://www.figma.com/api/mcp/asset/f63d6845-e5f7-41ae-a7bb-3dfe66ee59ee';
+const portrait = '/half-face.jpg';
 
 export default function AboutHero() {
   const sectionRef   = useRef<HTMLElement>(null);

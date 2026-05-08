@@ -1,5 +1,3 @@
-'use client';
-
 /*
   ABOUT BIO — editorial biography
   ────────────────────────────────
@@ -20,9 +18,6 @@
   scroll into view (GSAP ScrollTrigger, fires once).
 */
 
-import { useRef, useEffect } from 'react';
-import gsap from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
 const pullQuote =
   '"Design is never decoration. At its best it is the clearest, most honest expression of what you stand for."';
@@ -37,37 +32,8 @@ const para3 =
   'Today, H.Studio operates as a senior, intentionally small team. No juniors, no volume, no filler. Every project is led by Harvey personally, with a trusted network of specialists brought in when the scope demands it. The studio is selective by design: fewer clients, deeper engagement, and outcomes that last.';
 
 export default function AboutBio() {
-  const sectionRef  = useRef<HTMLElement>(null);
-  const quoteRef    = useRef<HTMLParagraphElement>(null);
-  const parasRef    = useRef<HTMLDivElement>(null);
-  const parasRef2   = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    gsap.registerPlugin(ScrollTrigger);
-    const section = sectionRef.current;
-    if (!section) return;
-
-    const tl = gsap.timeline({
-      scrollTrigger: {
-        trigger: section,
-        start: 'top center',
-        end: 'bottom top',
-        scrub: 1.5,
-      },
-    });
-
-    tl.to(quoteRef.current,  { x: '-60vw', ease: 'none' }, 0);
-    tl.to([parasRef.current, parasRef2.current], { x: '60vw', ease: 'none' }, 0);
-
-    return () => {
-      tl.scrollTrigger?.kill();
-      tl.kill();
-      gsap.set([quoteRef.current, parasRef.current, parasRef2.current], { clearProps: 'transform' });
-    };
-  }, []);
-
   return (
-    <section ref={sectionRef} id="bio" className="px-4 md:px-8 py-12 md:pt-[80px] md:pb-[120px] bg-white" style={{ overflowX: 'clip' }}>
+    <section id="bio" className="px-4 md:px-8 py-12 md:pt-[80px] md:pb-[120px] bg-white">
 
       {/* Header: [ Bio ] — rule — 002 */}
       <div className="flex items-center gap-6 mb-12 md:mb-[104px]">
@@ -82,7 +48,7 @@ export default function AboutBio() {
 
       <div className="flex flex-col gap-5 md:max-w-[662px] md:mx-auto">
 
-        <div ref={parasRef} className="flex flex-col gap-5">
+        <div className="flex flex-col gap-5">
           <p className="font-normal text-[14px] md:text-[18px] text-[#1f1f1f] leading-[1.5] tracking-[-0.04em]">
             {para1}
           </p>
@@ -90,13 +56,12 @@ export default function AboutBio() {
 
         {/* Pull-quote — between para 1 and para 2 */}
         <p
-          ref={quoteRef}
           className="font-light italic text-[24px] md:text-[35px] tracking-[-0.04em] leading-[1.25] text-[#1f1f1f] py-3 md:py-[40px]"
         >
           {pullQuote}
         </p>
 
-        <div ref={parasRef2} className="flex flex-col gap-5">
+        <div className="flex flex-col gap-5">
           <p className="font-normal text-[14px] md:text-[18px] text-[#1f1f1f] leading-[1.5] tracking-[-0.04em]">
             {para2}
           </p>

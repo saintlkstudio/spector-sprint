@@ -153,12 +153,14 @@ export default async function WorkDetailPage(
                   <span key={p._id} className="flex items-center">
                     {i > 0 && <span className="font-mono text-[12px] text-[#1f1f1f]/30 mx-2">|</span>}
                     {href && !isActive ? (
-                      <Link href={href} className="font-mono text-[12px] text-[#1f1f1f]/60 uppercase leading-[1.1] hover:opacity-100 transition-opacity duration-200">
+                      <Link href={href} className="relative group/nav font-mono text-[12px] text-[#1f1f1f] uppercase leading-[1.1]">
                         {p.title}
+                        <span className="absolute left-0 -bottom-[2px] h-px bg-current w-0 group-hover/nav:w-full transition-[width] duration-300 ease-in-out" />
                       </Link>
                     ) : (
-                      <span className="font-mono text-[12px] text-[#191919] uppercase leading-[1.1]">
+                      <span className="relative font-mono text-[12px] text-[#191919] uppercase leading-[1.1]">
                         {p.title}
+                        <span className="absolute left-0 -bottom-[2px] h-px bg-current w-full" />
                       </span>
                     )}
                   </span>

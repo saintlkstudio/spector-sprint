@@ -63,7 +63,7 @@ export default function ServicesDetail() {
       const tl = gsap.timeline({
         scrollTrigger: {
           trigger: sectionRef.current,
-          start: 'top 75%',
+          start: 'top 50%',
           once: true,
         },
       });
